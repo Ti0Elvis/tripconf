@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
+import { Header } from "./components/header";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 
@@ -25,6 +26,7 @@ export default function Layout({ children }: Readonly<Props>) {
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange>
+          <Header />
           <main className="w-full min-h-[calc(100vh-4rem)] py-8 tracking-tight whitespace-pre-wrap break-words">
             <MaxWidthWrapper>{children}</MaxWidthWrapper>
           </main>
