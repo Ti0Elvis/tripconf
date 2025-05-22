@@ -2,7 +2,10 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import { Header } from "./components/header";
+import { AuthProvider } from "@/context/auth";
+import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { QueryProvider } from "@/providers/query-provider";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 
 const roboto = Roboto({ weight: ["500", "700", "900"], subsets: ["latin"] });
@@ -26,11 +29,16 @@ export default function Layout({ children }: Readonly<Props>) {
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange>
-          <Header />
-          <main className="w-full min-h-[calc(100vh-4rem)] py-8 tracking-tight whitespace-pre-wrap break-words">
-            <MaxWidthWrapper>{children}</MaxWidthWrapper>
-          </main>
+          <AuthProvider>
+            <Header />
+            <QueryProvider>
+              <main className="w-full min-h-[calc(100vh-4rem)] py-8 tracking-tight whitespace-pre-wrap break-words">
+                <MaxWidthWrapper>{children}</MaxWidthWrapper>
+              </main>
+            </QueryProvider>
+          </AuthProvider>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );
