@@ -17,10 +17,10 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 
 const ROUTES = [
-  { name: "Preventives", path: "/preventives" },
-  { name: "Meals", path: "/meals" },
-  { name: "Services", path: "/services" },
-  { name: "Service Categories", path: "/service-categories" },
+  { name: "Preventives", path: "/preventive" },
+  { name: "Meals", path: "/meal" },
+  { name: "Services", path: "/service" },
+  { name: "Service Categories", path: "/service-categorie" },
 ];
 
 export function Header() {
@@ -76,7 +76,7 @@ export function Header() {
               ))}
             </section>
             <SheetClose asChild>
-              <Link href="/preventives/create">
+              <Link href="/preventive/create">
                 <Button className="w-full">Create your preventive</Button>
               </Link>
             </SheetClose>
