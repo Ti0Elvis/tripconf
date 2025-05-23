@@ -1,12 +1,12 @@
 "use client";
 import { z } from "zod";
 import { schema } from "./schema";
+import { useContext } from "react";
 import { sign_in } from "./actions";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { AuthContext } from "@/context/auth";
-import { useContext, useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -22,16 +22,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 
 export default function Page() {
-  const { isLogin, setIsLogin } = useContext(AuthContext)!;
+  const { setIsLogin } = useContext(AuthContext)!;
 
   const { toast } = useToast();
   const { push } = useRouter();
-
-  useEffect(() => {
-    if (isLogin) {
-      push("/");
-    }
-  }, [isLogin]);
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
