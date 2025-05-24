@@ -18,5 +18,9 @@ export function useCreatePreventive() {
     }
   };
 
-  return { next, previous, ...context };
+  const reset = () => {
+    context.form.reset();
+  };
+
+  return { next, previous, reset, ...context };
 }

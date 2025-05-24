@@ -11,7 +11,7 @@ export default function Layout({ children }: Readonly<Props>) {
       <h2 className="text-2xl font-extrabold">
         Build Your &#34;Il Tesoro Group Experience&#34;
       </h2>
-      <div className="mt-4 space-y-4">
+      <div className="mt-4 space-y-8">
         <StepNavigation />
         {children}
       </div>

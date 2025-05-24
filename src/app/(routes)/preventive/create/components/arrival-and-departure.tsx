@@ -1,16 +1,262 @@
 "use client";
+import {
+  MAX_DOUBLE_ROOMS,
+  MAX_NUMBER_OF_GUESTS,
+  MAX_SINGLE_ROOMS,
+  MIN_NUMBER_OF_GUESTS,
+} from "@/lib/constants";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Fragment } from "react";
+import { addDays, format } from "date-fns";
+import { Card } from "@/components/ui/card";
+import { CalendarIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { useCreatePreventive } from "@/hooks/use-create-preventive";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function ArrivalAndDeparture() {
-  const { next } = useCreatePreventive();
+  const { next, form } = useCreatePreventive();
+
+  const validateAndNext = async () => {
+    const isValid = await form.trigger();
+
+    if (isValid === true) {
+      next();
+    }
+  };
 
   return (
     <Fragment>
-      Arrival and Departure
+      <FormField
+        control={form.control}
+        name="name"
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormLabel>Preventive&#39;s name</FormLabel>
+              <FormControl>
+                <Input
+                  autoComplete="off"
+                  placeholder="Insert the name of the preventive"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
+      />
+      <div className="w-full flex flex-col gap-4 md:flex-row">
+        <FormField
+          control={form.control}
+          name="check_in"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Check in</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-between md:w-72">
+                        {field.value
+                          ? format(field.value, "PPP")
+                          : "Select the date for the check-in"}
+                        <CalendarIcon />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto">
+                    <Calendar
+                      mode="single"
+                      initialFocus
+                      selected={form.watch("check_in")}
+                      onSelect={(e) => {
+                        field.onChange(e);
+                        form.resetField("check_out");
+                      }}
+                      disabled={(e) => e < addDays(new Date(), -1)}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="check_out"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Check out</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-between md:w-72">
+                        {field.value
+                          ? format(field.value, "PPP")
+                          : "Select the date for the check-out"}
+                        <CalendarIcon />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto">
+                    <Calendar
+                      mode="single"
+                      initialFocus
+                      selected={form.watch("check_out")}
+                      onSelect={(e) => field.onChange(e)}
+                      disabled={(e) => {
+                        const check_in = form.watch("check_in");
+
+                        if (check_in !== undefined) {
+                          return e < check_in;
+                        } else {
+                          return e < addDays(new Date(), -1);
+                        }
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+      </div>
+      <FormField
+        control={form.control}
+        name="number_of_guests"
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormLabel>Number of guests</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={String(field.value)}
+                  className="grid grid-cols-8 md:grid-cols-16">
+                  {Array.from(
+                    {
+                      length: MAX_NUMBER_OF_GUESTS - MIN_NUMBER_OF_GUESTS + 1,
+                    },
+                    (_, i) => i + 2
+                  ).map((e) => {
+                    return (
+                      <FormItem key={e} className="flex items-center">
+                        <FormControl>
+                          <RadioGroupItem value={String(e)} />
+                        </FormControl>
+                        <FormLabel>{e}</FormLabel>
+                      </FormItem>
+                    );
+                  })}
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
+      />
+      <Card className="w-full p-4 text-sm">
+        Please note: The Il Tesoro property has a total of 16 rooms. Each room
+        has the option to be either single or double occupancy. Each room has a
+        private ensuite bathroom. There are a total of 10 rooms in our main site
+        villas, and 6 rooms in our additional villa Casa di Giovanni. Located
+        next to our natural waterfall pool, Casa di Giovanni is a 10 minute walk
+        from the 3 main site villas and the restaurant/event space building.
+      </Card>
+      <FormField
+        control={form.control}
+        name="double_rooms"
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormLabel>Double rooms</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={String(field.value)}
+                  className="grid grid-cols-8 md:grid-cols-16">
+                  {Array.from(
+                    {
+                      length: MAX_DOUBLE_ROOMS + 1,
+                    },
+                    (_, i) => i
+                  ).map((e) => {
+                    return (
+                      <FormItem key={e} className="flex items-center">
+                        <FormControl>
+                          <RadioGroupItem value={String(e)} />
+                        </FormControl>
+                        <FormLabel>{e}</FormLabel>
+                      </FormItem>
+                    );
+                  })}
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
+      />
+      <FormField
+        control={form.control}
+        name="single_rooms"
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormLabel>Single rooms</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={String(field.value)}
+                  className="grid grid-cols-8 md:grid-cols-16">
+                  {Array.from(
+                    {
+                      length: MAX_SINGLE_ROOMS + 1,
+                    },
+                    (_, i) => i
+                  ).map((e) => {
+                    return (
+                      <FormItem key={e} className="flex items-center">
+                        <FormControl>
+                          <RadioGroupItem value={String(e)} />
+                        </FormControl>
+                        <FormLabel>{e}</FormLabel>
+                      </FormItem>
+                    );
+                  })}
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
+      />
       <div className="w-full flex flex-col gap-2 justify-end md:flex-row">
-        <Button type="button" className="w-full md:w-auto" onClick={next}>
+        <Button
+          type="button"
+          className="w-full md:w-auto"
+          onClick={validateAndNext}>
           Next
         </Button>
       </div>
