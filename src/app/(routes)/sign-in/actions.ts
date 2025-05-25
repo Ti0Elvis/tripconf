@@ -1,17 +1,30 @@
 "use server";
 import { z } from "zod";
+import {
+  DAYS_TO_EXPIRE_TOKEN,
+  JWT_SECRET,
+  PASSWORD,
+  USERNAME,
+} from "@/lib/constants";
+import { SignJWT } from "jose";
 import { schema } from "./schema";
-import { PASSWORD, USERNAME } from "@/lib/constants";
+
+const secret = new TextEncoder().encode(JWT_SECRET);
 
 export async function sign_in(values: z.infer<typeof schema>) {
   try {
     if (values.username !== USERNAME || values.password !== PASSWORD) {
-      return { success: false, error: "Invalid username or password" };
+      return { token: undefined, error: "Invalid username or password" };
     }
 
-    return { success: true, error: undefined };
+    const token = await new SignJWT({})
+      .setProtectedHeader({ alg: "HS256" })
+      .setExpirationTime(`${DAYS_TO_EXPIRE_TOKEN}d`)
+      .sign(secret);
+
+    return { token: token, error: undefined };
   } catch (error) {
     console.error("Error in sign_in:", error);
-    return { success: false, error: "Internal error" };
+    return { token: undefined, error: "Internal error" };
   }
 }

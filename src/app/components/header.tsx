@@ -9,7 +9,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useContext } from "react";
-import { useRouter } from "next/navigation";
+import { deleteCookie } from "cookies-next";
 import { AuthContext } from "@/context/auth";
 import { Button } from "@/components/ui/button";
 import { AlignJustifyIcon } from "lucide-react";
@@ -24,9 +24,7 @@ const ROUTES = [
 ];
 
 export function Header() {
-  const { isLogin, setIsLogin } = useContext(AuthContext)!;
-
-  const { push } = useRouter();
+  const { isLogin } = useContext(AuthContext)!;
 
   return (
     <Sheet>
@@ -58,8 +56,8 @@ export function Header() {
                   variant="outline"
                   className="w-full"
                   onClick={() => {
-                    push("/sign-in");
-                    setIsLogin(false);
+                    deleteCookie("token");
+                    window.location.href = "/sign-in";
                   }}>
                   Logout
                 </Button>

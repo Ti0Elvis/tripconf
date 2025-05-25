@@ -1,7 +1,11 @@
 "use client";
-import { LoaderCircleIcon } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-import { createContext, Fragment, useEffect, useState } from "react";
+import { jwtVerify } from "jose";
+import { getCookie } from "cookies-next";
+import { JWT_SECRET } from "@/lib/constants";
+import { usePathname } from "next/navigation";
+import { createContext, useEffect, useState } from "react";
+
+const secret = new TextEncoder().encode(JWT_SECRET);
 
 interface Context {
   isLogin: boolean;
@@ -16,21 +20,24 @@ interface Props {
 
 export function AuthProvider({ children }: Props) {
   const pathname = usePathname();
-  const [loading, setLoading] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
 
-  const { push } = useRouter();
-
   useEffect(() => {
-    if (pathname === "/sign-in" && isLogin === true) {
-      push("/");
-    }
+    const token = getCookie("token") as string | undefined;
 
-    if (pathname !== "/sign-in" && isLogin === false) {
-      push("/sign-in");
-    }
+    if (token !== undefined) {
+      const verifyToken = async () => {
+        try {
+          await jwtVerify(token, secret);
+          setIsLogin(true);
+        } catch (error) {
+          console.error(error);
+          setIsLogin(false);
+        }
+      };
 
-    setLoading(false);
+      verifyToken();
+    }
   }, [isLogin, pathname]);
 
   const context: Context = {
@@ -39,15 +46,6 @@ export function AuthProvider({ children }: Props) {
   };
 
   return (
-    <AuthContext.Provider value={context}>
-      {loading ? (
-        <span className="flex h-screen w-full items-center justify-center">
-          <LoaderCircleIcon className="animate-spin" />
-          <p>Loading...</p>
-        </span>
-      ) : (
-        <Fragment>{children}</Fragment>
-      )}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={context}>{children}</AuthContext.Provider>
   );
 }

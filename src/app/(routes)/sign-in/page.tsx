@@ -1,12 +1,5 @@
 "use client";
 import { z } from "zod";
-import { schema } from "./schema";
-import { useContext } from "react";
-import { sign_in } from "./actions";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { AuthContext } from "@/context/auth";
 import {
   Form,
   FormControl,
@@ -15,17 +8,21 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { schema } from "./schema";
+import { addDays } from "date-fns";
+import { sign_in } from "./actions";
+import { setCookie } from "cookies-next";
+import { useForm } from "react-hook-form";
+import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { DAYS_TO_EXPIRE_TOKEN } from "@/lib/constants";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 
 export default function Page() {
-  const { setIsLogin } = useContext(AuthContext)!;
-
   const { toast } = useToast();
-  const { push } = useRouter();
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -39,18 +36,20 @@ export default function Page() {
   const { mutate, isPending } = useMutation({
     mutationKey: ["sign-in"],
     mutationFn: async (values: z.infer<typeof schema>) => {
-      const { success, error } = await sign_in(values);
+      const { token, error } = await sign_in(values);
 
       if (error !== undefined) {
         throw new Error(error);
       }
 
-      return success;
+      return token;
     },
-    onSuccess: () => {
+    onSuccess: (token) => {
       form.reset();
-      setIsLogin(true);
-      push("/");
+      setCookie("token", token, {
+        expires: addDays(new Date(), DAYS_TO_EXPIRE_TOKEN),
+      });
+      window.location.href = "/";
     },
     onError: (error: Error) => {
       form.reset();
