@@ -34,6 +34,7 @@ export default async function Page() {
       </Fragment>
     );
   } catch (error) {
+    console.error(error);
     return redirect("/error");
   }
 }

@@ -18,14 +18,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Fragment } from "react";
+import { cn } from "@/lib/utils";
 import { addDays, format } from "date-fns";
 import { Card } from "@/components/ui/card";
 import { CalendarIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { useCreatePreventive } from "@/hooks/use-create-preventive";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function ArrivalAndDeparture() {
   const { next, form } = useCreatePreventive();
@@ -145,36 +146,43 @@ export function ArrivalAndDeparture() {
       <FormField
         control={form.control}
         name="number_of_guests"
-        render={({ field }) => {
-          return (
+        render={({ field }) => (
+          <section className="flex flex-col gap-2">
             <FormItem>
               <FormLabel>Number of guests</FormLabel>
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={String(field.value)}
-                  className="grid grid-cols-8 md:grid-cols-16">
+                  name={field.name}
+                  className="flex flex-wrap gap-2">
                   {Array.from(
                     {
                       length: MAX_NUMBER_OF_GUESTS - MIN_NUMBER_OF_GUESTS + 1,
                     },
-                    (_, i) => i + 2
-                  ).map((e) => {
-                    return (
-                      <FormItem key={e} className="flex items-center">
-                        <FormControl>
-                          <RadioGroupItem value={String(e)} />
-                        </FormControl>
-                        <FormLabel>{e}</FormLabel>
-                      </FormItem>
-                    );
-                  })}
+                    (_, i) => i + MIN_NUMBER_OF_GUESTS
+                  ).map((e) => (
+                    <span
+                      key={e}
+                      onClick={() => {
+                        form.setValue("number_of_guests", String(e));
+                        form.clearErrors("number_of_guests");
+                      }}
+                      className={cn(
+                        "min-w-8 min-h-8 px-2 flex justify-center items-center text-sm font-extrabold cursor-pointer border border-primary rounded-full",
+                        form.watch("number_of_guests") === String(e)
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary/40"
+                      )}>
+                      {e}
+                    </span>
+                  ))}
                 </RadioGroup>
               </FormControl>
               <FormMessage />
             </FormItem>
-          );
-        }}
+          </section>
+        )}
       />
       <Card className="w-full p-4 text-sm">
         Please note: The Il Tesoro property has a total of 16 rooms. Each room
@@ -187,70 +195,78 @@ export function ArrivalAndDeparture() {
       <FormField
         control={form.control}
         name="double_rooms"
-        render={({ field }) => {
-          return (
+        render={({ field }) => (
+          <section className="flex flex-col gap-2">
             <FormItem>
               <FormLabel>Double rooms</FormLabel>
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={String(field.value)}
-                  className="grid grid-cols-8 md:grid-cols-16">
+                  name={field.name}
+                  className="flex flex-wrap gap-2">
                   {Array.from(
                     {
                       length: MAX_DOUBLE_ROOMS + 1,
                     },
                     (_, i) => i
-                  ).map((e) => {
-                    return (
-                      <FormItem key={e} className="flex items-center">
-                        <FormControl>
-                          <RadioGroupItem value={String(e)} />
-                        </FormControl>
-                        <FormLabel>{e}</FormLabel>
-                      </FormItem>
-                    );
-                  })}
+                  ).map((e) => (
+                    <span
+                      key={e}
+                      onClick={() => form.setValue("double_rooms", String(e))}
+                      className={cn(
+                        "min-w-8 min-h-8 px-2 flex justify-center items-center text-sm font-extrabold cursor-pointer border border-primary rounded-full",
+                        form.watch("double_rooms") === String(e)
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary/40"
+                      )}>
+                      {e}
+                    </span>
+                  ))}
                 </RadioGroup>
               </FormControl>
               <FormMessage />
             </FormItem>
-          );
-        }}
+          </section>
+        )}
       />
       <FormField
         control={form.control}
         name="single_rooms"
-        render={({ field }) => {
-          return (
+        render={({ field }) => (
+          <section className="flex flex-col gap-2">
             <FormItem>
               <FormLabel>Single rooms</FormLabel>
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={String(field.value)}
-                  className="grid grid-cols-8 md:grid-cols-16">
+                  name={field.name}
+                  className="flex flex-wrap gap-2">
                   {Array.from(
                     {
                       length: MAX_SINGLE_ROOMS + 1,
                     },
                     (_, i) => i
-                  ).map((e) => {
-                    return (
-                      <FormItem key={e} className="flex items-center">
-                        <FormControl>
-                          <RadioGroupItem value={String(e)} />
-                        </FormControl>
-                        <FormLabel>{e}</FormLabel>
-                      </FormItem>
-                    );
-                  })}
+                  ).map((e) => (
+                    <span
+                      key={e}
+                      onClick={() => form.setValue("single_rooms", String(e))}
+                      className={cn(
+                        "min-w-8 min-h-8 px-2 flex justify-center items-center text-sm font-extrabold cursor-pointer border border-primary rounded-full",
+                        form.watch("single_rooms") === String(e)
+                          ? "bg-primary text-white"
+                          : "hover:bg-primary/40"
+                      )}>
+                      {e}
+                    </span>
+                  ))}
                 </RadioGroup>
               </FormControl>
               <FormMessage />
             </FormItem>
-          );
-        }}
+          </section>
+        )}
       />
       <div className="w-full flex flex-col gap-2 justify-end md:flex-row">
         <Button
