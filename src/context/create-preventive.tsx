@@ -1,6 +1,7 @@
 "use client";
 import { z } from "zod";
 import { Form } from "@/components/ui/form";
+import type { DailyMeals } from "@/types/meal";
 import { createContext, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, UseFormReturn } from "react-hook-form";
@@ -10,6 +11,8 @@ interface Context {
   step: number;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   form: UseFormReturn<z.infer<typeof schema>>;
+  meals: Array<DailyMeals>;
+  setMeals: React.Dispatch<React.SetStateAction<Array<DailyMeals>>>;
 }
 
 export const CreatePreventiveContext = createContext<null | Context>(null);
@@ -20,6 +23,7 @@ interface Props {
 
 export function CreatePreventiveProvider({ children }: Readonly<Props>) {
   const [step, setStep] = useState(0);
+  const [meals, setMeals] = useState<Array<DailyMeals>>([]);
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -41,12 +45,14 @@ export function CreatePreventiveProvider({ children }: Readonly<Props>) {
     step,
     setStep,
     form,
+    meals,
+    setMeals,
   };
 
   return (
     <CreatePreventiveContext.Provider value={context}>
       <Form {...form}>
-        <form>{children}</form>
+        <form onSubmit={(e) => e.preventDefault()}>{children}</form>
       </Form>
     </CreatePreventiveContext.Provider>
   );

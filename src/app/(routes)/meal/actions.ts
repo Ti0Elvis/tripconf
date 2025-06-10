@@ -1,8 +1,8 @@
 "use server";
 import { z } from "zod";
 import { db } from "@/db/supabase";
-import { Meal } from "@prisma/client";
 import { schema } from "./components/meal-form";
+import { Day, Meal, Type } from "@prisma/client";
 import { DEFAULT_ERROR_MESSAGE } from "@/lib/constants";
 
 export async function findAllMeals(): Promise<Array<Meal>> {
@@ -35,4 +35,36 @@ export async function create(values: z.infer<typeof schema>) {
   } catch (error) {
     return { error: (error as Error).message ?? DEFAULT_ERROR_MESSAGE };
   }
+}
+
+export async function groupMealsByDay() {
+  const meals = await findAllMeals();
+
+  const lunches: Array<Meal> = [];
+  const dinners: Array<Meal> = [];
+
+  meals.forEach((e) => {
+    if (e.type === Type.lunch) {
+      lunches.push(e);
+    } else {
+      dinners.push(e);
+    }
+  });
+
+  const filterMealsByDay = (day: Day) => {
+    return {
+      lunches: lunches.filter((e) => {
+        return e.day === day;
+      }),
+      dinners: dinners.filter((e) => {
+        return e.day === day;
+      }),
+    };
+  };
+
+  return {
+    first: filterMealsByDay("first"),
+    default: filterMealsByDay("default"),
+    last: filterMealsByDay("last"),
+  };
 }

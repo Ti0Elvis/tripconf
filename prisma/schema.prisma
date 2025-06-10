@@ -9,8 +9,8 @@ datasource db {
 }
 
 model Preventive {
-  id    Int    @id @default(autoincrement())
-  meals Meal[] @relation("PreventiveMeals")
+  id    Int          @id @default(autoincrement())
+  meals DailyMeals[]
 }
 
 enum Day {
@@ -29,9 +29,22 @@ model Meal {
   name        String
   day         Day
   type        Type
-  preventives Preventive[] @relation("PreventiveMeals")
+  description String       @default("")
+  cost        Int          @default(0)
+  assignments DailyMeals[]
 
   @@unique([name, day, type])
+}
+
+model DailyMeals {
+  id           Int        @id @default(autoincrement())
+  date         DateTime
+  preventive   Preventive @relation(fields: [preventiveId], references: [id])
+  preventiveId Int
+  meal         Meal       @relation(fields: [mealId], references: [id])
+  mealId       Int
+
+  @@unique([preventiveId, mealId, date])
 }
 
 model Service {

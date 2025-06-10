@@ -22,5 +22,5 @@ export function useCreatePreventive() {
     context.form.reset();
   };
 
-  return { next, previous, reset, ...context };
+  return { next, previous, reset, ...context, ...context.form.watch() };
 }
