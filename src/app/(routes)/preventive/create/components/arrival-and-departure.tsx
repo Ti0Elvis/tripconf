@@ -28,7 +28,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { useCreatePreventive } from "@/hooks/use-create-preventive";
 
 export function ArrivalAndDeparture() {
-  const { next, form } = useCreatePreventive();
+  const { next, form, check_out } = useCreatePreventive();
 
   const validateAndNext = async () => {
     const isValid = await form.trigger();
@@ -111,8 +111,8 @@ export function ArrivalAndDeparture() {
                       <Button
                         variant="outline"
                         className="w-full justify-between md:w-72">
-                        {field.value
-                          ? format(field.value, "PPP")
+                        {check_out
+                          ? format(check_out, "PPP")
                           : "Select the date for the check-out"}
                         <CalendarIcon />
                       </Button>
