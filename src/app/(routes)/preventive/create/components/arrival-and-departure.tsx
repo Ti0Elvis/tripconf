@@ -25,7 +25,6 @@ import { CalendarIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { RadioGroup } from "@/components/ui/radio-group";
 import { useCreatePreventive } from "@/hooks/use-create-preventive";
 
 export function ArrivalAndDeparture() {
@@ -146,39 +145,33 @@ export function ArrivalAndDeparture() {
       <FormField
         control={form.control}
         name="number_of_guests"
-        render={({ field }) => (
+        render={() => (
           <section className="flex flex-col gap-2">
             <FormItem>
               <FormLabel>Number of guests</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={String(field.value)}
-                  name={field.name}
-                  className="flex flex-wrap gap-2">
-                  {Array.from(
-                    {
-                      length: MAX_NUMBER_OF_GUESTS - MIN_NUMBER_OF_GUESTS + 1,
-                    },
-                    (_, i) => i + MIN_NUMBER_OF_GUESTS
-                  ).map((e) => (
-                    <span
-                      key={e}
-                      onClick={() => {
-                        form.setValue("number_of_guests", String(e));
-                        form.clearErrors("number_of_guests");
-                      }}
-                      className={cn(
-                        "min-w-8 min-h-8 px-2 flex justify-center items-center text-sm font-extrabold cursor-pointer border border-primary rounded-full",
-                        form.watch("number_of_guests") === String(e)
-                          ? "bg-primary text-white"
-                          : "hover:bg-primary/40"
-                      )}>
-                      {e}
-                    </span>
-                  ))}
-                </RadioGroup>
-              </FormControl>
+              <div className="flex flex-wrap gap-2">
+                {Array.from(
+                  {
+                    length: MAX_NUMBER_OF_GUESTS - MIN_NUMBER_OF_GUESTS + 1,
+                  },
+                  (_, i) => i + MIN_NUMBER_OF_GUESTS
+                ).map((e) => (
+                  <span
+                    key={e}
+                    onClick={() => {
+                      form.setValue("number_of_guests", String(e));
+                      form.clearErrors("number_of_guests");
+                    }}
+                    className={cn(
+                      "min-w-8 min-h-8 px-2 flex justify-center items-center text-sm font-extrabold cursor-pointer border border-primary rounded-full",
+                      form.watch("number_of_guests") === String(e)
+                        ? "bg-primary text-white"
+                        : "hover:bg-primary/40"
+                    )}>
+                    {e}
+                  </span>
+                ))}
+              </div>
               <FormMessage />
             </FormItem>
           </section>
@@ -195,36 +188,30 @@ export function ArrivalAndDeparture() {
       <FormField
         control={form.control}
         name="double_rooms"
-        render={({ field }) => (
+        render={() => (
           <section className="flex flex-col gap-2">
             <FormItem>
               <FormLabel>Double rooms</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={String(field.value)}
-                  name={field.name}
-                  className="flex flex-wrap gap-2">
-                  {Array.from(
-                    {
-                      length: MAX_DOUBLE_ROOMS + 1,
-                    },
-                    (_, i) => i
-                  ).map((e) => (
-                    <span
-                      key={e}
-                      onClick={() => form.setValue("double_rooms", String(e))}
-                      className={cn(
-                        "min-w-8 min-h-8 px-2 flex justify-center items-center text-sm font-extrabold cursor-pointer border border-primary rounded-full",
-                        form.watch("double_rooms") === String(e)
-                          ? "bg-primary text-white"
-                          : "hover:bg-primary/40"
-                      )}>
-                      {e}
-                    </span>
-                  ))}
-                </RadioGroup>
-              </FormControl>
+              <div className="flex flex-wrap gap-2">
+                {Array.from(
+                  {
+                    length: MAX_DOUBLE_ROOMS + 1,
+                  },
+                  (_, i) => i
+                ).map((e) => (
+                  <span
+                    key={e}
+                    onClick={() => form.setValue("double_rooms", String(e))}
+                    className={cn(
+                      "min-w-8 min-h-8 px-2 flex justify-center items-center text-sm font-extrabold cursor-pointer border border-primary rounded-full",
+                      form.watch("double_rooms") === String(e)
+                        ? "bg-primary text-white"
+                        : "hover:bg-primary/40"
+                    )}>
+                    {e}
+                  </span>
+                ))}
+              </div>
               <FormMessage />
             </FormItem>
           </section>
@@ -233,36 +220,30 @@ export function ArrivalAndDeparture() {
       <FormField
         control={form.control}
         name="single_rooms"
-        render={({ field }) => (
+        render={() => (
           <section className="flex flex-col gap-2">
             <FormItem>
               <FormLabel>Single rooms</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={String(field.value)}
-                  name={field.name}
-                  className="flex flex-wrap gap-2">
-                  {Array.from(
-                    {
-                      length: MAX_SINGLE_ROOMS + 1,
-                    },
-                    (_, i) => i
-                  ).map((e) => (
-                    <span
-                      key={e}
-                      onClick={() => form.setValue("single_rooms", String(e))}
-                      className={cn(
-                        "min-w-8 min-h-8 px-2 flex justify-center items-center text-sm font-extrabold cursor-pointer border border-primary rounded-full",
-                        form.watch("single_rooms") === String(e)
-                          ? "bg-primary text-white"
-                          : "hover:bg-primary/40"
-                      )}>
-                      {e}
-                    </span>
-                  ))}
-                </RadioGroup>
-              </FormControl>
+              <div className="flex flex-wrap gap-2">
+                {Array.from(
+                  {
+                    length: MAX_SINGLE_ROOMS + 1,
+                  },
+                  (_, i) => i
+                ).map((e) => (
+                  <span
+                    key={e}
+                    onClick={() => form.setValue("single_rooms", String(e))}
+                    className={cn(
+                      "min-w-8 min-h-8 px-2 flex justify-center items-center text-sm font-extrabold cursor-pointer border border-primary rounded-full",
+                      form.watch("single_rooms") === String(e)
+                        ? "bg-primary text-white"
+                        : "hover:bg-primary/40"
+                    )}>
+                    {e}
+                  </span>
+                ))}
+              </div>
               <FormMessage />
             </FormItem>
           </section>
