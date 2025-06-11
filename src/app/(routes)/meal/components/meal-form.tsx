@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { create } from "../actions";
+import { formatPrice } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -29,6 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
+import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export const schema = z.object({
@@ -38,6 +40,8 @@ export const schema = z.object({
     .transform((item) => item.trim()),
   day: z.enum(["first", "default", "last"]),
   type: z.enum(["lunch", "dinner"]),
+  cost: z.string().optional(), // 'cost' is handled as a string in the form, but represents a numeric value
+  description: z.string().optional(),
 });
 
 export function MealForm() {
@@ -49,7 +53,9 @@ export function MealForm() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
+      cost: "",
       name: "",
+      description: "",
     },
     mode: "onChange",
   });
@@ -164,6 +170,58 @@ export function MealForm() {
                   <FormMessage />
                 </FormItem>
               )}
+            />
+            <FormField
+              name="cost"
+              control={form.control}
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel>Cost</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        maxLength={5}
+                        autoComplete="off"
+                        placeholder={`${formatPrice(0)}`}
+                        onChange={(item) => {
+                          const value = item.target.value;
+                          const lastChar = value.slice(-1);
+
+                          if (lastChar === " ") {
+                            return;
+                          }
+
+                          if (isNaN(Number(lastChar)) === false) {
+                            form.setValue("cost", value);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+            <hr />
+            <FormField
+              name="description"
+              control={form.control}
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Insert a description for this meal"
+                        className="resize-none"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
             <div className="w-full flex justify-end">
               <Button disabled={isPending}>

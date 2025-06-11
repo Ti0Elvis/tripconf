@@ -28,6 +28,7 @@ export async function create(values: z.infer<typeof schema>) {
     await db.meal.create({
       data: {
         ...values,
+        cost: Number(values.cost),
       },
     });
 
