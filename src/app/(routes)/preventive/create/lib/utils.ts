@@ -6,9 +6,9 @@ export function getDay(index: number, night: number): Day {
     case 0:
       return "first";
     case night - 1:
-      return "default";
-    default:
       return "last";
+    default:
+      return "default";
   }
 }
 
