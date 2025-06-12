@@ -20,7 +20,7 @@ const ROUTES = [
   { name: "Preventives", path: "/preventive" },
   { name: "Meals", path: "/meal" },
   { name: "Services", path: "/service" },
-  { name: "Service Categories", path: "/service-categorie" },
+  { name: "Service Categories", path: "/service-category" },
 ];
 
 export function Header() {
