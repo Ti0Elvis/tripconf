@@ -17,8 +17,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Fragment } from "react";
 import { cn } from "@/lib/utils";
+import { Fragment, useState } from "react";
 import { addDays, format } from "date-fns";
 import { Card } from "@/components/ui/card";
 import { CalendarIcon } from "lucide-react";
@@ -28,12 +28,23 @@ import { Calendar } from "@/components/ui/calendar";
 import { useCreatePreventive } from "@/hooks/use-create-preventive";
 
 export function ArrivalAndDeparture() {
-  const { next, form, check_out } = useCreatePreventive();
+  const { next, form, check_in, check_out, setMeals } = useCreatePreventive();
+
+  const [dates, setDates] = useState({
+    check_in: check_in ?? new Date(),
+    check_out: check_out ?? new Date(),
+  });
 
   const validateAndNext = async () => {
     const isValid = await form.trigger();
 
     if (isValid === true) {
+      // Reset meals to ensure consistency when dates change
+      if (check_in !== dates.check_in || check_out !== dates.check_out) {
+        setMeals([]);
+      }
+
+      setDates({ check_in, check_out });
       next();
     }
   };
@@ -73,8 +84,8 @@ export function ArrivalAndDeparture() {
                       <Button
                         variant="outline"
                         className="w-full justify-between md:w-72">
-                        {field.value
-                          ? format(field.value, "PPP")
+                        {check_in
+                          ? format(check_in, "PPP")
                           : "Select the date for the check-in"}
                         <CalendarIcon />
                       </Button>
@@ -161,6 +172,10 @@ export function ArrivalAndDeparture() {
                     onClick={() => {
                       form.setValue("number_of_guests", String(e));
                       form.clearErrors("number_of_guests");
+
+                      form.setValue("number_of_guests", String(e));
+                      form.setValue("single_rooms", String(e % 2));
+                      form.setValue("double_rooms", String(Math.floor(e / 2)));
                     }}
                     className={cn(
                       "min-w-8 min-h-8 px-2 flex justify-center items-center text-sm font-extrabold cursor-pointer border border-primary rounded-full",
