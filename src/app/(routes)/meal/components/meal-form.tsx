@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -97,14 +98,14 @@ export function MealForm() {
 
   return (
     <Dialog open={dialog} onOpenChange={setDialog}>
-      <Button className="flex-grow" onClick={() => setDialog(true)}>
-        Create a meal
-      </Button>
+      <DialogTrigger asChild>
+        <Button className="flex-grow">Create a meal</Button>
+      </DialogTrigger>
       <DialogContent>
         <DialogTitle className="font-bold">Meal form</DialogTitle>
         <DialogDescription className="hidden" />
         <Form {...form}>
-          <form className="mt-8 space-y-8" onSubmit={onSubmit}>
+          <form className="space-y-4" onSubmit={onSubmit}>
             <FormField
               name="name"
               control={form.control}
