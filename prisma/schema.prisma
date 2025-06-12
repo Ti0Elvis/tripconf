@@ -48,9 +48,21 @@ model DailyMeals {
 }
 
 model Service {
-  id Int @id @default(autoincrement())
+  id            Int             @id @default(autoincrement())
+  name          String
+  category      ServiceCategory @relation(fields: [categoryId], references: [id])
+  categoryId    Int
+  costPerPerson Int             @default(0)
+  groupCost     Int             @default(0)
+  isRequiredVan Boolean         @default(false)
+  description   String          @default("")
+  vanCost       Int             @default(0)
+
+  @@unique([name, categoryId])
 }
 
 model ServiceCategory {
-  id Int @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  services Service[]
 }
