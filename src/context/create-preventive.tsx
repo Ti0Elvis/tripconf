@@ -1,5 +1,6 @@
 "use client";
 import { z } from "zod";
+import { Service } from "@prisma/client";
 import { Form } from "@/components/ui/form";
 import type { DailyMeals } from "@/types/meal";
 import { createContext, useState } from "react";
@@ -13,6 +14,8 @@ interface Context {
   form: UseFormReturn<z.infer<typeof schema>>;
   meals: Array<DailyMeals>;
   setMeals: React.Dispatch<React.SetStateAction<Array<DailyMeals>>>;
+  services: Array<Service>;
+  setServices: React.Dispatch<React.SetStateAction<Array<Service>>>;
 }
 
 export const CreatePreventiveContext = createContext<null | Context>(null);
@@ -24,6 +27,7 @@ interface Props {
 export function CreatePreventiveProvider({ children }: Readonly<Props>) {
   const [step, setStep] = useState(0);
   const [meals, setMeals] = useState<Array<DailyMeals>>([]);
+  const [services, setServices] = useState<Array<Service>>([]);
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -47,6 +51,8 @@ export function CreatePreventiveProvider({ children }: Readonly<Props>) {
     form,
     meals,
     setMeals,
+    services,
+    setServices,
   };
 
   return (
