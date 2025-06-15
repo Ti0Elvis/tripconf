@@ -1,5 +1,7 @@
 "use client";
 import { Service } from "@prisma/client";
+import { formatPrice } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useCreatePreventive } from "@/hooks/use-create-preventive";
@@ -9,7 +11,14 @@ interface Props {
 }
 
 export function SelectService({ service }: Readonly<Props>) {
-  const { services, setServices } = useCreatePreventive();
+  const [vans, setVans] = useState(0);
+  const { services, setServices, number_of_guests } = useCreatePreventive();
+
+  useEffect(() => {
+    if (service.isRequiredVan === true) {
+      setVans(Math.ceil(Number(number_of_guests) / 7));
+    }
+  }, []);
 
   const isActive = services.some((item) => item.id === service.id);
 
@@ -36,7 +45,13 @@ export function SelectService({ service }: Readonly<Props>) {
           {service.name} {service.description && <> - {service.description}</>}
         </Label>
       </div>
-      {/* Set price */}
+      <p>
+        {formatPrice(0)}
+        <br />
+        {service.isRequiredVan === true && (
+          <span className="text-primary">Required {vans} van/s</span>
+        )}
+      </p>
     </div>
   );
 }
