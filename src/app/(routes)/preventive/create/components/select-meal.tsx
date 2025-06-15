@@ -1,5 +1,4 @@
 "use client";
-import { isEqual } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatPrice } from "@/lib/utils";
-import { DailyMeals } from "@/types/meal";
+import { getTime, isEqual } from "date-fns";
 import { ChevronDownIcon } from "lucide-react";
 import { Day, Meal, Type } from "@prisma/client";
 import { Fragment, useContext, useState } from "react";
@@ -30,29 +29,28 @@ export function SelectMeal({ ...props }: Readonly<Props>) {
   const updateMeals = (meal: Meal | null) => {
     setMeal(meal);
 
-    const dailyMealEntry = meals.find((item) => isEqual(item.date, props.date));
+    let dailyMealsEntry = meals.find((item) => isEqual(item.date, props.date));
 
-    if (dailyMealEntry === undefined) {
-      const dailyMeals: DailyMeals = {
+    if (dailyMealsEntry === undefined) {
+      dailyMealsEntry = {
         day: props.day,
         date: props.date,
         lunch: meal?.type === "lunch" ? meal : null,
         dinner: meal?.type === "dinner" ? meal : null,
       };
-
-      setMeals([...meals, dailyMeals]);
-      return;
     }
 
-    if (dailyMealEntry !== undefined) {
-      dailyMealEntry[props.type] = meal;
+    dailyMealsEntry[props.type] = meal;
 
-      setMeals([
+    setMeals(
+      [
         ...meals.filter((item) => !isEqual(item.date, props.date)),
-        dailyMealEntry,
-      ]);
-      return;
-    }
+        dailyMealsEntry,
+      ]
+        .sort((a, b) => getTime(a.date) - getTime(b.date))
+        .filter((e) => e.lunch !== null || e.dinner !== null)
+    );
+    return;
   };
 
   return (

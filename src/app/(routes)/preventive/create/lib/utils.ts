@@ -21,6 +21,6 @@ export function getDate(day: Day, ci: Date, co: Date, i: number): Date {
     case "default":
       return addDays(ci, i);
     default:
-      return co;
+      return addDays(co, -1);
   }
 }
