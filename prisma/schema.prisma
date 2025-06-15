@@ -9,8 +9,23 @@ datasource db {
 }
 
 model Preventive {
-  id    Int          @id @default(autoincrement())
-  meals DailyMeals[]
+  id                   Int          @id @default(autoincrement())
+  name                 String
+  check_in             DateTime
+  check_out            DateTime
+  number_of_guests     Int
+  double_rooms         Int
+  single_rooms         Int
+  free_quote           Int          @default(0)
+  description          String       @default("")
+  number_of_vans       Int          @default(0)
+  meals                DailyMeals[]
+  services             Service[]
+  // Information that could be change in the future
+  tax                  Float        @default(0)
+  cost_per_night       Float        @default(0)
+  cost_per_double_room Float        @default(0)
+  cost_per_single_room Float        @default(0)
 }
 
 enum Day {
@@ -57,6 +72,7 @@ model Service {
   isRequiredVan Boolean         @default(false)
   description   String          @default("")
   vanCost       Int             @default(0)
+  preventives   Preventive[]
 
   @@unique([name, categoryId])
 }
