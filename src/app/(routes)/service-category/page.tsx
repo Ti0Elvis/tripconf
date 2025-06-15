@@ -16,7 +16,7 @@ export default async function Page() {
 
     return (
       <Fragment>
-        <h2 className="text-2xl font-bold">Services Categories Table</h2>
+        <h2 className="text-2xl font-bold">Service Categories Table</h2>
         <div className="mt-4">
           <DataTableProvider
             name="services-categories"
