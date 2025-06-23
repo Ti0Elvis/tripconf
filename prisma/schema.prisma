@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Preventive {
+  id                String   @id @default(cuid())
+  name              String
+  checkIn           DateTime
+  checkOut          DateTime
+  numberOfGuests    Int
+  doubleRooms       Int
+  singleRooms       Int
+  freeQuote         Int      @default(0)
+  description       String   @default("")
+  numberOfVans      Int      @default(0)
+  meals             Json // This is an array of IMeal (check the file meal.ts in types folder)
+  services          Json // This is an array of Services
+  // Some information
+  tax               Float    @default(0)
+  costPerNight      Float    @default(0)
+  costPerDoubleRoom Float    @default(0)
+  costPerSingleRoom Float    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Meal {
+  id          String   @id @default(cuid())
+  name        String
+  dayType     DayType
+  mealType    MealType
+  description String   @default("")
+  cost        Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, dayType, mealType])
+}
+
+enum DayType {
+  first_day
+  default_day
+  last_day
+}
+
+enum MealType {
+  lunch
+  dinner
+}
+
+model Service {
+  id            String          @id @default(cuid())
+  name          String
+  costPerPerson Int             @default(0)
+  groupCost     Int             @default(0)
+  description   String          @default("")
+  isRequiredVan Boolean         @default(false)
+  vanCost       Int             @default(0)
+  // Category
+  categoryId    String
+  category      ServiceCategory @relation(fields: [categoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, categoryId])
+}
+
+model ServiceCategory {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  services Service[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
